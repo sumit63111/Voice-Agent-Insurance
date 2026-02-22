@@ -13,6 +13,7 @@ from tts.tts_service import get_tts
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 from livekit.plugins import silero, noise_cancellation
 from rag.retrival import initialize, get_tools, get_prompt_file_path
+from utils.transcription_logger import TranscriptionLogger, setup_transcription_logging
 
 load_dotenv()
 
@@ -27,11 +28,15 @@ async def entrypoint(ctx: agents.JobContext):
     with open(prompt_file_path, "r", encoding="utf-8") as f:
         instructions = f.read().strip()
     
-    # Add RAG policy instruction (like ref.py lines 831-842)
     instructions += (
-        "\n\n⚠️ CRITICAL RAG POLICY: "
-        "Before answering ANY question about HDFC ERGO policies, procedures, requirements, or operations, "
-        "you MUST first call the RAG_RETRIEVER tool to fetch verified information from the knowledge base. "
+        "\n\n⚠️ CRITICAL RAG POLICY - MANDATORY TOOL USAGE: "
+        "Before answering ANY question about HDFC ERGO, you MUST first call the RAG_RETRIEVER tool. "
+        "This includes but is not limited to:\n"
+        "- Contact information (addresses, phone numbers, email addresses, office locations, branch addresses)\n"
+        "- Policy details, procedures, requirements, or operations\n"
+        "- Specific policy terms, coverage details, claim procedures\n"
+        "- Network hospitals, exclusions, optional covers\n"
+        "- ANY factual information about HDFC ERGO that requires verification\n\n"
         "This is MANDATORY for every substantive question. "
         "Do NOT rely on your training data or previous responses. "
         "Do NOT assume you know the answer. "
@@ -65,12 +70,20 @@ async def entrypoint(ctx: agents.JobContext):
     session._greeting_in_progress = False
     session._greeting_start_time = None
 
-    @session.on("user_input_transcribed")
-    def on_user_input_transcribed(event):
+    # Custom handler for greeting interruption check
+    def greeting_check_handler(event):
+        """Check for greeting interruption before logging"""
         if session._greeting_in_progress and session._greeting_start_time:
             if time.time() - session._greeting_start_time < 0.3:
-                return
+                return False  # Skip logging if greeting just started
             session._greeting_in_progress = False
+        return True  # Continue with logging
+
+    # Setup transcription logging using utility module
+    transcription_logger, logged_say = setup_transcription_logging(
+        session, 
+        custom_user_handler=greeting_check_handler
+    )
 
     await ctx.connect()
 
@@ -79,8 +92,8 @@ async def entrypoint(ctx: agents.JobContext):
             # Disable audio input temporarily to avoid interruptions
             session.input.set_audio_enabled(False)
             
-            # Use session.say() for direct text-to-speech greeting
-            greeting_text = "Hello! Welcome to Hdfc Ergo Insurance. How can I assist you today?"
+            # Use session.say() for direct text-to-speech greeting - Sales pitch for outbound call
+            greeting_text = "Hello! This is Priya from Hdfc Ergo I'm reaching out because you recently showed interest in Hdfc Ergo health insurance... I'm here to help you understand our mai Optima Secure plan which gives 4X coverage...is this a good time to talk?"
             await session.say(greeting_text, allow_interruptions=True)
             
             # Re-enable audio input after greeting
