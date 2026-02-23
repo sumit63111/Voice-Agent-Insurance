@@ -7,13 +7,13 @@ from livekit import agents
 
 logger = logging.getLogger(__name__)
 from livekit.agents import AgentSession, Agent, RoomInputOptions
-from stt.stt_service import get_stt
-from llm.llm_service import get_llm
-from tts.tts_service import get_tts
+from voice_agent_orchestraction.stt.stt_service import get_stt
+from voice_agent_orchestraction.llm.llm_service import get_llm
+from voice_agent_orchestraction.tts.tts_service import get_tts
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 from livekit.plugins import silero, noise_cancellation
-from rag.retrival import initialize, get_tools, get_prompt_file_path
-from utils.transcription_logger import TranscriptionLogger, setup_transcription_logging
+from voice_agent_orchestraction.rag.retrival import initialize, get_tools, get_prompt_file_path
+from voice_agent_orchestraction.utils.transcription_logger import TranscriptionLogger, setup_transcription_logging
 
 load_dotenv()
 
@@ -93,7 +93,7 @@ async def entrypoint(ctx: agents.JobContext):
             session.input.set_audio_enabled(False)
             
             # Use session.say() for direct text-to-speech greeting - Sales pitch for outbound call
-            greeting_text = "Hello! This is Priya from Hdfc Ergo I'm reaching out because you recently showed interest in Hdfc Ergo health insurance... I'm here to help you understand our mai Optima Secure plan which gives 4X coverage...is this a good time to talk?"
+            greeting_text = "Hello This is Priya from Hdfc Ergo I'm reaching out because you recently showed interest in Hdfc Ergo health insurance... I'm here to help you understand our mai Optima Secure plan which gives 4X coverage...is this a good time to talk?"
             await session.say(greeting_text, allow_interruptions=True)
             
             # Re-enable audio input after greeting
