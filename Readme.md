@@ -28,8 +28,7 @@ The agent runs as a real-time conversational system with:
   - Strict policy in `main.py` that forces the agent to **always call RAG** before answering HDFC ERGO questions
 
 - **TTS caching (design)**
-  - The architecture allows adding a **TTS cache layer** (e.g., caching synthesized audio per text)
-  - Not enabled by default due to resource constraints, but the pattern is compatible with caching wrappers around `session.say`
+  - **TTS cache** can implemented to optimize **cost and latency**, especially for repeated TTS outputs
 
 - **Fine‑tune Gemma‑3‑4B with LoRA**
   - `finetune_lora_uv.py` shows **QLoRA** training for Gemma‑3‑4B
