@@ -197,10 +197,16 @@ The agent runs as a real-time conversational system with:
     - Example transcripts
     - Example JSON payloads (e.g., for fine‑tuning)
 
-> **Demo video**
->
-> You can watch a short end‑to‑end demo of the voice agent here:  
-> [`samples/demo.mp4`](samples/demo.mp4)
+### 🎥 Demo Video
+
+<div align="center">
+
+<video width="800" controls>
+  <source src="samples/demo1.mp4" type="video/mp4">
+  Your browser does not support the video tag. [Download the video](samples/demo.mp4) instead.
+</video>
+
+</div>
 
 ---
 
@@ -235,4 +241,4 @@ The agent runs as a real-time conversational system with:
   - Telephony: `Telephony/Readme.md`
   - Fine‑tuning: `finetune_lora_uv.py` and `fine tuning/Readme.md`
 
-This README is a high‑level guide; for deep dives, follow the specific Readme files referenced above.
+This README is a high‑level guide; for deep dives, follow the specific Readme files referenced above
