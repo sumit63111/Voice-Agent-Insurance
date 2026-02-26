@@ -8,11 +8,19 @@ The goal is to train a model that can answer health‑insurance related question
 ## High‑Level Overview
 
 - **Base model**: `google/gemma-3-4b-it`
-- **Task**: Instruction / dialogue tuning for an insurance sales agent
+- **Task**: Instruction / dialogue tuning for an insurance sales agent with **conversational flow capabilities** (natural multi‑turn back‑and‑forth, probing questions, soft closing, etc.).
 - **Method**: QLoRA (4‑bit quantization) + LoRA adapters on key attention/MLP layers
 - **Training data**:
   - `fine tuning/data/insurance_sales_data_expanded.jsonl` – used in Colab via the notebook
   - JSONL with multi‑turn dialogues (`dialogue` field) or single‑turn `prompt`/`response`
+  - Dialogues enriched with **policy knowledge extracted from the same PDFs used by the RAG layer** (e.g. Optima Secure documents), so the model learns both:
+    - how to **steer a sales conversation**, and
+    - how to **phrase explanations** that are faithful to the PDF content.
+- **Script / language mix for better TTS**:
+  - Prompts and responses include **Hindi in Devanagari** (e.g. `क्या Hospitalization के बाद के खर्चे भी cover होते हैं?`) as well as **Hindi/Hinglish written in Latin script** (e.g. `waiting period kitna hota hai?`).
+  - This is intentional so that, at inference time, the model can generate utterances that:
+    - remain natural for Hindi‑speaking users, and
+    - are friendly to **ElevenLabs TTS**, which often pronounces Hindi words more reliably when they are transliterated into Latin script.
 - **Outputs**:
   - LoRA adapter directory: `./gemma-3-finetuned` (created by the notebook)
   - Script‑based adapter directory: `--output_dir` from `Training.py`

@@ -55,8 +55,7 @@ async def entrypoint(ctx: agents.JobContext):
         stt=get_stt(),
         llm=get_llm(),  # Remove tools from here - tools go to Agent
         tts=get_tts(),
-        vad=silero.VAD.load(),
-        turn_detection=MultilingualModel(),
+        # vad=silero.VAD.load(),
     )
 
     await session.start(
@@ -93,7 +92,7 @@ async def entrypoint(ctx: agents.JobContext):
             session.input.set_audio_enabled(False)
             
             # Use session.say() for direct text-to-speech greeting - Sales pitch for outbound call
-            greeting_text = "Hello This is Priya from Hdfc Ergo I'm reaching out because you recently showed interest in Hdfc Ergo health insurance... I'm here to help you understand our mai Optima Secure plan which gives 4X coverage...is this a good time to talk?"
+            greeting_text = "Hello This is Priya from Hdfc Ergo I'm reaching out because you recently showed interest in health insurance I'm here to help you understand mai Optima Secure plan which gives 4X coverageis this a good time to talk?"
             await session.say(greeting_text, allow_interruptions=True)
             
             # Re-enable audio input after greeting

@@ -3,7 +3,7 @@
 This project implements a **voice-first sales & support agent** for HDFC ERGO health insurance using **LiveKit**.  
 The agent runs as a real-time conversational system with:
 - **Deepgram Nova‑3** for speech-to-text (STT)
-- **ElevenLabs (or compatible)** for text-to-speech (TTS)
+- **ElevenLabs** for text-to-speech (TTS)
 - **OpenAI GPT‑4.1‑mini** as the primary LLM
 - A **RAG layer + caching** on top of HDFC ERGO my:Optima Secure documents for accurate answers
 - Optional **fine-tuned Gemma‑3‑4B (LoRA)** for domain‑specialized behavior  
@@ -78,6 +78,7 @@ The agent runs as a real-time conversational system with:
 - **RAG & Retrieval**
   - **FAISS** for vector search
   - **OpenAI embeddings** (`text-embedding-3-large` 1024‑dim)
+  - **(Optional)** local embedding model (e.g. small **Qwen‑0.6B** encoder) for ultra‑low‑latency, on‑prem embedding generation when you have sufficient GPU/CPU
   - **BM25** (`rank-bm25`) for keyword search
 
 ---
@@ -144,6 +145,9 @@ The agent runs as a real-time conversational system with:
   - FAISS and BM25 indices are:
     - Loaded once on startup
     - Cached in memory for fast retrieval
+  - Embedding latency depends on the encoder:
+    - With hosted APIs (e.g., OpenAI embeddings) you pay both model + network latency.
+    - With a **small local embedding model** (for example a ~0.6B parameter model such as Qwen‑0.6B run on a decent GPU), you can push **per‑query embedding time down to ~60 ms**, making end‑to‑end RAG round‑trips much faster for real‑time voice.
 
 - **Learn more (design & configuration)**
   - See **RAG Readme**:
@@ -192,6 +196,11 @@ The agent runs as a real-time conversational system with:
   - This can be used as a **redirection page** to:
     - Example transcripts
     - Example JSON payloads (e.g., for fine‑tuning)
+
+> **Demo video**
+>
+> You can watch a short end‑to‑end demo of the voice agent here:  
+> [`samples/demo.mp4`](samples/demo.mp4)
 
 ---
 
